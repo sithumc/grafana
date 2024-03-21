@@ -14,8 +14,13 @@ export function buildImportMap(importMap: Record<string, System.Module>) {
     // get the module to use
     const module = config.featureToggles.pluginsAPIMetrics ? trackPackageUsage(importMap[key], key) : importMap[key];
 
-    // expose dependency to SystemJS
-    SystemJS.set(module_name, module);
+    if (typeof module === 'function') {
+      // expose async dependency to SystemJS
+      registerDynamicModule(key, module);
+    } else {
+      // expose dependency to SystemJS
+      SystemJS.set(module_name, module);
+    }
 
     // expose dependency to sandboxed plugins
     // the sandbox handles its own way of plugins api metrics
@@ -40,4 +45,15 @@ export function resolveModulePath(path: string) {
   }
 
   return `${config.appSubUrl ?? ''}/${path}`;
+}
+
+// Use SystemJS.register to dynamically load dependencies at runtime...
+function registerDynamicModule(key: string, value: () => System.Module) {
+  SystemJS.register(`${SHARED_DEPENDENCY_PREFIX}:${key}`, [], function (_export, _context) {
+    return {
+      execute: async function () {
+        _export(await value());
+      },
+    };
+  });
 }
