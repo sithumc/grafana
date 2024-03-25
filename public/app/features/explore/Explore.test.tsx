@@ -194,6 +194,7 @@ describe('Explore', () => {
           onClick: () => {},
         },
       ],
+      isLoading: false,
     });
 
     setup({ queryResponse: makeEmptyQueryResponse(LoadingState.Done) });
