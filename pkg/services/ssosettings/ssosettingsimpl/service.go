@@ -367,7 +367,7 @@ func (s *Service) doReload(ctx context.Context) {
 	for provider, connector := range s.reloadables {
 		settings := getSettingByProvider(provider, settingsList)
 
-		if settings == nil || len(settings.Settings) == 0 {
+		if settings == nil || settings.Settings == nil || len(settings.Settings) == 0 {
 			s.logger.Warn("SSO Settings is empty", "provider", provider)
 			continue
 		}
