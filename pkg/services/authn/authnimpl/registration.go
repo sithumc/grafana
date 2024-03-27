@@ -1,6 +1,7 @@
 package authnimpl
 
 import (
+	"github.com/grafana/grafana/pkg/infra/log"
 	"github.com/grafana/grafana/pkg/infra/remotecache"
 	"github.com/grafana/grafana/pkg/login/social"
 	"github.com/grafana/grafana/pkg/services/accesscontrol"
@@ -35,6 +36,8 @@ func ProvideRegistration(
 	socialService social.Service, cache *remotecache.RemoteCache,
 	ldapService service.LDAP, settingsProviderService setting.Provider,
 ) Registration {
+	logger := log.New("authn.registration")
+
 	authnSvc.RegisterClient(clients.ProvideRender(renderService))
 	authnSvc.RegisterClient(clients.ProvideAPIKey(apikeyService))
 
@@ -71,8 +74,7 @@ func ProvideRegistration(
 	if cfg.AuthProxy.Enabled && len(proxyClients) > 0 {
 		proxy, err := clients.ProvideProxy(cfg, cache, proxyClients...)
 		if err != nil {
-			// TODO: Fix logging
-			// s.log.Error("Failed to configure auth proxy", "err", err)
+			logger.Error("Failed to configure auth proxy", "err", err)
 		} else {
 			authnSvc.RegisterClient(proxy)
 		}
