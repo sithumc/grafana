@@ -204,7 +204,7 @@
     "rollup-plugin-visualizer": "^5.12.0",
     "rudder-sdk-js": "2.48.6",
     "sass": "1.72.0",
-    "stylelint": "16.2.1",
+    "stylelint": "16.3.1",
     "stylelint-config-sass-guidelines": "11.0.0",
     "testing-library-selector": "0.3.1",
     "tracelib": "1.0.1",
