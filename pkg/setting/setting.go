@@ -93,6 +93,7 @@ type Cfg struct {
 	// HTTP Server Settings
 	CertFile          string
 	KeyFile           string
+	CertWatchInterval time.Duration
 	HTTPAddr          string
 	HTTPPort          string
 	Env               string
@@ -495,7 +496,7 @@ type Cfg struct {
 	PublicDashboardsEnabled bool
 
 	// Cloud Migration
-	CloudMigrationIsTarget bool
+	CloudMigration CloudMigrationSettings
 
 	// Feature Management Settings
 	FeatureManagement FeatureMgmtSettings
@@ -1494,7 +1495,7 @@ func readSecuritySettings(iniFile *ini.File, cfg *Cfg) error {
 	cfg.StrictTransportSecurityMaxAge = security.Key("strict_transport_security_max_age_seconds").MustInt(86400)
 	cfg.StrictTransportSecurityPreload = security.Key("strict_transport_security_preload").MustBool(false)
 	cfg.StrictTransportSecuritySubDomains = security.Key("strict_transport_security_subdomains").MustBool(false)
-	cfg.AngularSupportEnabled = security.Key("angular_support_enabled").MustBool(true)
+	cfg.AngularSupportEnabled = security.Key("angular_support_enabled").MustBool(false)
 	cfg.CSPEnabled = security.Key("content_security_policy").MustBool(false)
 	cfg.CSPTemplate = security.Key("content_security_policy_template").MustString("")
 	cfg.CSPReportOnlyEnabled = security.Key("content_security_policy_report_only").MustBool(false)
@@ -1572,11 +1573,9 @@ func readAuthSettings(iniFile *ini.File, cfg *Cfg) (err error) {
 
 	cfg.OAuthCookieMaxAge = auth.Key("oauth_state_cookie_max_age").MustInt(600)
 	cfg.SignoutRedirectUrl = valueAsString(auth, "signout_redirect_url", "")
+
 	// Deprecated
-	cfg.OAuthSkipOrgRoleUpdateSync = auth.Key("oauth_skip_org_role_update_sync").MustBool(false)
-	if cfg.OAuthSkipOrgRoleUpdateSync {
-		cfg.Logger.Warn("[Deprecated] The oauth_skip_org_role_update_sync configuration setting is deprecated. Please use skip_org_role_sync inside the auth provider section instead.")
-	}
+	cfg.OAuthSkipOrgRoleUpdateSync = false
 
 	cfg.DisableLogin = auth.Key("disable_login").MustBool(false)
 
@@ -1658,7 +1657,9 @@ func readUserSettings(iniFile *ini.File, cfg *Cfg) error {
 			string(roletype.RoleAdmin)})
 	cfg.VerifyEmailEnabled = users.Key("verify_email_enabled").MustBool(false)
 
-	cfg.CaseInsensitiveLogin = users.Key("case_insensitive_login").MustBool(true)
+	// Deprecated
+	// cfg.CaseInsensitiveLogin = users.Key("case_insensitive_login").MustBool(true)
+	cfg.CaseInsensitiveLogin = true
 
 	cfg.LoginHint = valueAsString(users, "login_hint", "")
 	cfg.PasswordHint = valueAsString(users, "password_hint", "")
@@ -1840,6 +1841,7 @@ func (cfg *Cfg) readServerSettings(iniFile *ini.File) error {
 	cfg.AppSubURL = AppSubUrl
 	cfg.Protocol = HTTPScheme
 	cfg.ServeFromSubPath = server.Key("serve_from_sub_path").MustBool(false)
+	cfg.CertWatchInterval = server.Key("certs_watch_interval").MustDuration(0)
 
 	protocolStr := valueAsString(server, "protocol", "http")
 
@@ -1996,9 +1998,4 @@ func (cfg *Cfg) readLiveSettings(iniFile *ini.File) error {
 func (cfg *Cfg) readPublicDashboardsSettings() {
 	publicDashboards := cfg.Raw.Section("public_dashboards")
 	cfg.PublicDashboardsEnabled = publicDashboards.Key("enabled").MustBool(true)
-}
-
-func (cfg *Cfg) readCloudMigrationSettings() {
-	cloudMigration := cfg.Raw.Section("cloud_migration")
-	cfg.CloudMigrationIsTarget = cloudMigration.Key("is_target").MustBool(false)
 }

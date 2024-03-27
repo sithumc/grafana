@@ -463,6 +463,7 @@ trigger:
     - docs/**
     - '*.md'
     include:
+    - .golangci.toml
     - Makefile
     - pkg/**
     - packaging/**
@@ -4922,6 +4923,6 @@ kind: secret
 name: gcr_credentials
 ---
 kind: signature
-hmac: 2cb5d8efff73a8190fb989fab0e601f5d3a1ff94d269450ebbe45c8b74fe4a35
+hmac: 3a9dc0ad4f3214110277d7ea2a94b56571b32dde19257dfc80b8b52d7bdb85f5
 
 ...
