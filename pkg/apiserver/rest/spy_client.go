@@ -47,11 +47,13 @@ func (c *spyStorageClient) Reset() {
 	c.spy.counts = map[string]int{}
 }
 
+//nolint:golint,unused
 type spyStorageShim struct {
 	Storage
 	spy *StorageSpy
 }
 
+//nolint:golint,unused
 type spyLegacyStorageShim struct {
 	LegacyStorage
 	spy *StorageSpy
@@ -75,7 +77,7 @@ type LegacyStorageSpyClient interface {
 }
 
 type LegacyStorageSpy struct {
-	counts map[string]int
+	counts map[string]int //nolint:golint,unused
 }
 
 type spyLegacyStorageClient struct {
@@ -83,6 +85,7 @@ type spyLegacyStorageClient struct {
 	spy *StorageSpy
 }
 
+//nolint:golint,unused
 func (s *LegacyStorageSpy) record(seen string) {
 	s.counts[seen]++
 }

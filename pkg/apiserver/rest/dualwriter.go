@@ -140,6 +140,7 @@ func (d *DualWriter) Create(ctx context.Context, obj runtime.Object, createValid
 	switch CurrentMode {
 	case Mode1:
 		// mode 1: only write to legacy store
+		// it's the default mode if none is set
 		return legacy.Create(ctx, obj, createValidation, options)
 
 	// mode 2: also write to Unified Storage
@@ -176,8 +177,7 @@ func (d *DualWriter) Create(ctx context.Context, obj runtime.Object, createValid
 		}
 		return rsp, nil
 	default:
-		// TODO: assume mode 1 if no mode is defined?
-		return nil, fmt.Errorf("no dual writer mode defined")
+		return nil, fmt.Errorf("invalid dual writer mode")
 	}
 }
 
