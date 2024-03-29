@@ -74,9 +74,9 @@
             "usa-states.geojson"
           ],
           [
-            "application/octet-stream",
-            "application/octet-stream",
-            "application/octet-stream"
+            "application/geo+json",
+            "application/geo+json",
+            "application/geo+json"
           ],
           [
             255943,
