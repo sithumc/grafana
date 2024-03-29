@@ -193,7 +193,6 @@
     "jest-junit": "16.0.0",
     "jest-matcher-utils": "29.7.0",
     "jest-watch-typeahead": "^2.2.2",
-    "lerna": "8.1.2",
     "mini-css-extract-plugin": "2.8.1",
     "msw": "2.2.13",
     "mutationobserver-shim": "0.3.7",
